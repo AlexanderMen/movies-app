@@ -18,4 +18,10 @@ const AboutMovie = ({ title, releaseDate, overview }) => {
 	);
 };
 
+AboutMovie.propTypes = {
+  title: PropTypes.string.isRequired,
+	releaseDate: PropTypes.string.isRequired,
+  overview: PropTypes.string.isRequired,
+};
+
 export default AboutMovie;

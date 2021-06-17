@@ -1,22 +1,22 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import './App.css';
 
-import MoviedbService from '../../services/MoviedbService.js';
+import MoviedbService from '../../services/MoviedbService';
 import MoviesList from '../MoviesList';
 
 export default class App extends Component {
 	
 	state = {
 		results: null,
+		error: false,
 	};
+	
+	moviedbService = new MoviedbService();
 	
 	constructor() {
 		super();
 		this.getSearchResults();
 	}
-	
-	moviedbService = new MoviedbService();
 	
 	getSearchResults() {
 		this.moviedbService.getMovies('return')
@@ -24,15 +24,19 @@ export default class App extends Component {
 				this.setState({
 					results
 				});
-			});
+			})
+			.catch(this.errorCase);
 	}
 	
+	errorCase = () => this.setState({error: true});
+	
 	render() {
-		const { results } = this.state;
+		const { results, error } = this.state;
 		
 		return (
 			<MoviesList
 				results={results}
+				error={error}
 				overviewCutting={this.moviedbService.overviewCutting} />
 		);
 	}

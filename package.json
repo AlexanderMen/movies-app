@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^12.8.3",
     "antd": "^4.15.6",
     "date-fns": "^2.22.1",
+    "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
@@ -53,11 +54,15 @@
     "lint-staged": "^11.0.0",
     "prettier": "^2.3.1"
   },
-	"husky": {
-		"hooks": {
-			"pre-commit": "lint-staged"
-		}
-	},
-	"lint-staged":  {
-		"*.(js|jsx)": ["npm run lint:fix", "git add"]
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.(js|jsx)": [
+      "npm run lint:fix",
+      "git add"
+    ]
+  }
 }
