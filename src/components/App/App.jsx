@@ -9,17 +9,25 @@ export default class App extends Component {
 	state = {
 		results: null,
 		error: false,
+		userInputValue: '',
 	};
 	
 	moviedbService = new MoviedbService();
 	
-	constructor() {
-		super();
-		this.getSearchResults();
+	componentDidMount() {
 	}
 	
+	componentDidUpdate(prevProps, prevState) {
+		const { userInputValue } = this.state;
+		if(prevState.userInputValue !== userInputValue && userInputValue) this.getSearchResults()
+	}
+	
+	onUserInput = value => this.setState({ userInputValue: value });
+	
 	getSearchResults() {
-		this.moviedbService.getMovies('return')
+		const { userInputValue } = this.state;
+		
+		this.moviedbService.getMovies(userInputValue)
 			.then((results) => {
 				this.setState({
 					results
@@ -28,16 +36,20 @@ export default class App extends Component {
 			.catch(this.errorCase);
 	}
 	
-	errorCase = () => this.setState({error: true});
+	errorCase = () => {
+		this.setState({ error: true });
+	};
 	
 	render() {
-		const { results, error } = this.state;
+		const { results, error, userInputValue } = this.state;
 		
 		return (
 			<MoviesList
 				results={results}
 				error={error}
-				overviewCutting={this.moviedbService.overviewCutting} />
+				overviewCutting={this.moviedbService.overviewCutting}
+				onUserInput={this.onUserInput}
+				userInputValue={userInputValue} />
 		);
 	}
 };
