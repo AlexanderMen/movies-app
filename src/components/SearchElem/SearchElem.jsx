@@ -34,7 +34,7 @@ export default class SearchElem extends Component {
 		
 		return (
 			<Col span={24}>
-				<div className='search'>
+				<div className='searchElem'>
 					<Input
 						onChange={evt => {
 								this.onInputChange(evt);

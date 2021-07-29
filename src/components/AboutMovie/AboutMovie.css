@@ -6,18 +6,51 @@
 	line-height: 22px;
 	color: #000000;
 	margin-left: 20px;
-	margin-right: 20px;
+	margin-right: 9px;
 	margin-top: 12px;
 }
 
 h1 {
 	font-size: 20px;
 	line-height: 28px;
+	margin-bottom: 0;
 }
 
 p {
 	margin-bottom: 8px;
+	margin-right: 11px;
 }
+
+.title_and_rating_wrapper {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 7px;
+}
+
+.rating {
+	width: 30px;
+	height: 30px;
+	border: 2px solid #E90000;
+	margin-left: 8px;
+	border-radius: 50%;
+	text-align: center;
+	line-height: 28px;
+	flex: none;
+}
+
+.rating_3-5 {
+	border-color: #E97E00;
+}
+
+.rating_5-7 {
+	border-color: #E9D100;
+}
+
+.rating_7 {
+	border-color: #66E900;
+}
+
 
 .release-date {
 	color: #827E7E;
@@ -32,4 +65,8 @@ p {
 	color: rgba(0, 0, 0, 0.65);
 	padding: 2px 4px;
 	margin-right: 8px;
+}
+
+.rate {
+	font-size: 15px;
 }
