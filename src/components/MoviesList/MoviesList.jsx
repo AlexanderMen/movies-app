@@ -62,16 +62,15 @@ export default class MoviesList extends Component {
 		
 		const noPagination = isRatedPageContent ? noPaginationRated() : noPaginationSearch();
 		
-		const searchElem = isRatedPageContent ? null : (<SearchElem onUserInput={onUserInput} />);
+		const searchElem = isRatedPageContent ? null : (<SearchElem prevValue={userInputValue} onUserInput={onUserInput} />);
 		
 		const sumPages = isRatedPageContent ? totalRatedPages : totalPages;
 		
 		const pagination = noPagination ? null : (<Col className="paginationWrapper"
 																									 span={23}>
 																								<Pagination defaultCurrent={1}
-																														defaultPageSize={6}
 																														onChange={handleChange}
-																														total={sumPages} />
+																														total={sumPages * 10} />
 																							</Col>);
 		
 		return (
@@ -122,10 +121,11 @@ export default class MoviesList extends Component {
 			const posterPath = movie.poster_path ? `https://image.tmdb.org/t/p/w200/${movie.poster_path}` : '';
 			const {title, overview, id} = movie;
 			const releaseDate = movie.release_date;
+			const movieGenreIds = movie.genre_ids;
 			const ratedMovie = ratedResults ? ratedResults.find(item => item.id === id) : null;
 			const movieRating = !ratedMovie ? null : ratedMovie.rating;
 			
-			const movieItemContent = <MovieItemContent posterPath={posterPath} title={title} releaseDate={releaseDate} overview={overview} overviewCutting={overviewCutting} setMovieRating={setMovieRating} rateFilm={rateFilm} id={id} guestSessionId={guestSessionId} movieRating={movieRating} />;
+			const movieItemContent = <MovieItemContent posterPath={posterPath} title={title} releaseDate={releaseDate} overview={overview} overviewCutting={overviewCutting} setMovieRating={setMovieRating} rateFilm={rateFilm} id={id} guestSessionId={guestSessionId} movieRating={movieRating}  movieGenreIds={movieGenreIds} />;
 
 			return this.getMovieItem(movieItemContent, id);
 		});
@@ -148,11 +148,11 @@ export default class MoviesList extends Component {
 		
 		const moviesListElems = error ? err : moviesResults.map((movie) => {
 			const posterPath = movie.poster_path ? `https://image.tmdb.org/t/p/w200/${movie.poster_path}` : '';
-			const {title, overview, rating} = movie;
+			const {title, overview, rating } = movie;
 			const releaseDate = movie.release_date;
 			const movieGenreIds = movie.genre_ids;
 			
-			const movieItemContent = <MovieItemContent posterPath={posterPath} title={title} releaseDate={releaseDate} overview={overview} overviewCutting={overviewCutting} setMovieRating={setMovieRating} rateFilm={rateFilm} id={movie.id} guestSessionId={guestSessionId} movieRating={rating} movieGenreIds={movieGenreIds}/>;
+			const movieItemContent = <MovieItemContent posterPath={posterPath} title={title} releaseDate={releaseDate} overview={overview} overviewCutting={overviewCutting} setMovieRating={setMovieRating} rateFilm={rateFilm} id={movie.id} guestSessionId={guestSessionId} movieGenreIds={movieGenreIds} movieRating={rating}/>;
 
 			return this.getMovieItem(movieItemContent, movie.id);
 		});
@@ -169,7 +169,7 @@ export default class MoviesList extends Component {
 };
 
 
-const MovieItemContent = ({ posterPath, title, releaseDate, overview, overviewCutting, setMovieRating, id, movieRating, movieGenreIds }) => (
+const MovieItemContent = ({ posterPath, title, releaseDate, overview, overviewCutting, setMovieRating, id, movieGenreIds, movieRating }) => (
 	<Row>
 		<Col span={10}>
 			<Poster posterPath={posterPath} />
@@ -185,9 +185,9 @@ const MovieItemContent = ({ posterPath, title, releaseDate, overview, overviewCu
 							overview={overviewCutting(overview)}
 							setMovieRating={setMovieRating}
 							id={id}
-							movieRating={movieRating}
 							movieGenreIds={movieGenreIds}
-							genres={genres} />
+							genres={genres}
+							movieRating={movieRating} />
 					)
 				}
 			</GenresConsumer>
@@ -196,6 +196,7 @@ const MovieItemContent = ({ posterPath, title, releaseDate, overview, overviewCu
 
 MovieItemContent.defaultProps = {
 	releaseDate: null,
+	movieGenreIds: [],
 	movieRating: null,
 };
 
@@ -207,7 +208,7 @@ MovieItemContent.propTypes = {
 	overviewCutting: PropTypes.func.isRequired,
 	setMovieRating: PropTypes.func.isRequired,
 	id: PropTypes.number.isRequired,
+	movieGenreIds: PropTypes.arrayOf(PropTypes.number),
 	movieRating: PropTypes.number,
-	movieGenreIds: PropTypes.arrayOf(PropTypes.number).isRequired,
 };
 

@@ -13,6 +13,7 @@ export default class SearchElem extends Component {
 	
 	static propTypes = {
 		onUserInput: PropTypes.func.isRequired,
+		prevValue: PropTypes.string.isRequired,
 	};
 	
 	debouncing = debounce(() => this.inputChange(), 1000);
@@ -30,7 +31,10 @@ export default class SearchElem extends Component {
 	};
 		
 	render() {
-		const { value } = this.state;
+		let { value } = this.state;
+		const { prevValue } = this.props;
+		
+		if(!value && prevValue) value = prevValue
 		
 		return (
 			<Col span={24}>

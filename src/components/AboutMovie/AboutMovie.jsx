@@ -1,66 +1,84 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Rate } from 'antd';
 import { format } from 'date-fns';
 import './AboutMovie.css';
 
-const AboutMovie = ({ title, releaseDate, overview, setMovieRating, id, movieRating, movieGenreIds, genres }) => {
-	let date = null;
-	let ratingClass = 'rating';
-	const onRateFilm = value => setMovieRating(value, id);
+export default class AboutMovie extends Component {
 	
-	if(releaseDate) date = format(new Date(releaseDate), 'MMMM dd, yyyy')
-	
-	if(movieRating < 5 && movieRating > 2) {
-		ratingClass = `${ratingClass} rating_3-5`;
-	} else if(movieRating < 7 && movieRating > 4) {
-		ratingClass = `${ratingClass} rating_5-7`;
-	} else if(movieRating > 6) {
-		ratingClass = `${ratingClass} rating_7`;
+	static defaultProps = {
+		releaseDate: null,
+		movieGenreIds: [],
+		movieRating: null,
 	};
 	
-	let movieGenres = null;
-	if(movieGenreIds.length) {
-			const movieGenresName = genres.map(genre => {
-			const movieGenre = movieGenreIds.find(movieId => movieId === genre.id);
-			if(movieGenre) return movieGenre.name
-			return null;
-		});
+	static propTypes = {
+		title: PropTypes.string.isRequired,
+		releaseDate: PropTypes.string,
+		overview: PropTypes.string.isRequired,
+		setMovieRating: PropTypes.func.isRequired,
+		id: PropTypes.number.isRequired,
+		movieGenreIds: PropTypes.arrayOf(PropTypes.number),
+		genres: PropTypes.arrayOf(PropTypes.object).isRequired,
+		movieRating: PropTypes.number,
+	};
+	
+	state = {
+		movieRatingFromState: 0,
+	};
+	
+	onRateFilm = value => {
+		const { setMovieRating, id } = this.props;
 		
-		movieGenres = movieGenresName.map((movieGenre) => <span className='genre' key={Math.random()}>{movieGenre}</span>);
+		this.setState({movieRatingFromState: value});
+		setMovieRating(value, id);
 	};
-	
-	return (
-		<div className='about_movie'>
-			<div className='title_and_rating_wrapper'>
-				<h1>{title}</h1>
-				<div className={ratingClass}>{!movieRating ? 0 : movieRating}</div>
+		
+	render() {
+		const { title, releaseDate, overview, movieGenreIds, genres, movieRating } = this.props;
+		const { movieRatingFromState } = this.state;
+		let date = null;
+		let ratingClass = 'rating';
+		
+		if(releaseDate) date = format(new Date(releaseDate), 'MMMM dd, yyyy')
+		
+		let movieGenres = null;
+		if(movieGenreIds && movieGenreIds.length) {
+				const movieGenresName = movieGenreIds.map(movieId => {
+				const movieGenre = genres.find(genre => movieId === genre.id);
+				return movieGenre.name;
+			});
+			
+			movieGenres = movieGenresName.map(movieGenre => <span className='genre' key={Math.random()}>{movieGenre}</span>);
+		};
+		
+		let rating = null;
+		if(!movieRatingFromState && !movieRating) rating = 0
+		if(movieRatingFromState > 0) rating = movieRatingFromState
+		if(!movieRatingFromState && movieRating) rating = movieRating
+		
+		if(rating < 5 && rating > 2) {
+			ratingClass = `${ratingClass} rating_3-5`;
+		} else if(rating < 7 && rating > 4) {
+			ratingClass = `${ratingClass} rating_5-7`;
+		} else if(rating > 6) {
+			ratingClass = `${ratingClass} rating_7`;
+		};
+																				
+		return (
+			<div className='about_movie'>
+				<div className='title_and_rating_wrapper'>
+					<h1>{title}</h1>
+					<div className={ratingClass}>{!rating ? 0 : rating}</div>
+				</div>
+				<p className='release-date'>{date}</p>
+				<p className='genres_wrapper'>
+					{movieGenres}
+				</p>
+				<p>{overview}</p>
+				<Rate className='rate' allowHalf count={10} onChange={this.onRateFilm} value={rating} />
 			</div>
-			<p className='release-date'>{date}</p>
-			<p>
-				{movieGenres}
-			</p>
-			<p>{overview}</p>
-			<Rate className='rate' allowHalf count={10} onChange={onRateFilm} value={movieRating} />
-		</div>
-	);
+		);
+	}	
 };
-
-AboutMovie.defaultProps = {
-	movieRating: null,
-	releaseDate: null,
-	genres: [],
-};
-
-AboutMovie.propTypes = {
-  title: PropTypes.string.isRequired,
-	releaseDate: PropTypes.string,
-  overview: PropTypes.string.isRequired,
-	setMovieRating: PropTypes.func.isRequired,
-	id: PropTypes.number.isRequired,
-	movieRating: PropTypes.number,
-	movieGenreIds: PropTypes.arrayOf(PropTypes.number).isRequired,
-	genres: PropTypes.arrayOf(PropTypes.object),
-};
-
-export default AboutMovie;
+	

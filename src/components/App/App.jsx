@@ -88,9 +88,9 @@ export default class App extends Component {
 	changeContentType = value => this.setState({pageContent: value});
 	
 	rateFilm = () => {
-		const { guestSessionId } = this.state;
+		const { guestSessionId, minValueRated, maxValueRated } = this.state;
 		
-		if(guestSessionId) this.getResults(this.getRatedResults, 1, 0, 6, true)
+		if(guestSessionId) this.getResults(this.getRatedResults, 1, minValueRated, maxValueRated, true)
 	};
 	
 	onUserInput = value => {
